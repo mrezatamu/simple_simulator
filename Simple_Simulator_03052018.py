@@ -16,7 +16,7 @@ numLanes = 1
 numRamps = 0
 segLength = 40000           ### feet
 deltaT = 0.5
-totalTime = 900             ### Total Simulation Time 
+totalTime = 120             ### Total Simulation Time 
 figure_number = 0
 WTRatio = 1                 ### Portion of analysis period to include the waves
 totalCars = 730
@@ -209,7 +209,6 @@ while figure_number < batch_size:
     # print (listAccel)
     # print (" ")
     
-
     #=======================================================================
     
     t_s_mat_row = round(segLength/pixel_s)
@@ -219,8 +218,8 @@ while figure_number < batch_size:
     x_0 = 0
     x_1 = 0
     while time < totalTime:
-    #     print("============================")
-    #     print("Time is: ", time)
+#         print("============================")
+#         print("Time is: ", time)
 
         if time != 0:
             column = math.floor((time-deltaT)/t_width)
@@ -230,6 +229,9 @@ while figure_number < batch_size:
         for i in range(totalCars):
             
             x_0 = listPos[i]
+# # #             i_p_old = -1
+# # #             if round(listPos[i]/pixel_s) in range(t_s_mat_row):
+# # #                 i_p_old = int(t_s_mat_row - round(listPos[i]/pixel_s))
             
             listSpeed[i] = listSpeed[i] + (listAccel[i] * deltaT * 0.6818182)
             if listSpeed[i] < 0:
@@ -243,17 +245,31 @@ while figure_number < batch_size:
             #Updating the sigma time and sigma length 
             x_1 = listPos[i]
             delta_xi = rows(x_0,x_1,s_width)
-#             print(delta_xi)
+
             for j in range(len(delta_xi[0])):
                 if delta_xi[0][j] in range(n_rows):
                     sigma_li[delta_xi[0][j]][column] = sigma_li[delta_xi[0][j]][column] + delta_xi[1][j]
                     sigma_ti[delta_xi[0][j]][column] = sigma_ti[delta_xi[0][j]][column] + deltaT
             
+            #===================================================================            
             #Updating the time_space_matrix:
-            i_p = int(round(listPos[i]/pixel_s))
+            i_p = t_s_mat_row - int(round(listPos[i]/pixel_s))
             j_p = int(round(time/pixel_t))
             if i_p in range(t_s_mat_row) and j_p in range(t_s_mat_col):
                 time_space_matrix[i_p][j_p] = 0
+# # #             ## approximately connecting the points:
+# # #             if i_p_old > 0 and j_p-1 > 0:
+# # #                 delta = i_p_old - i_p
+# # #                 if delta > 1:
+# # #                     i_n = i_p_old - 1
+# # #                     while i_n >= i_p_old - delta/2:
+# # #                         time_space_matrix[i_n][(j_p-1)] = 0
+# # #                         i_n -= 1
+# # #                     while i_n >= i_p:
+# # #                         time_space_matrix[i_n][j_p] = 0
+# # #                         mreza.append([i_n, j_p])
+# # #                         i_n -= 1
+            #===================================================================
 
             if listDet[i] == 1:
                 sDyn = so + max(0, (listTgap[i] * listSpeed[i] * 1.47) + (((listSpeed[i] * 1.47) * (1.47 * (listSpeed[i] - listSpeed[i-1])))/ (2 * np.sqrt(listaMax[i] * listb[i])))) 
@@ -280,20 +296,20 @@ while figure_number < batch_size:
     ## Estimating the densities and flow for each block:
     Density = sigma_ti/(s_width*t_width/5280)
     Flow = sigma_li/(s_width*t_width/3600)
-    np.savetxt('/Volumes/Samsung_T5/Google Drive/Texas A&M/TAMU Projects/NN_Time_Space/Simulation/Simple_Simulator/Simulator/simulation_results/Density_'+str(figure_number)+rand_name, Density)
-    np.savetxt('/Volumes/Samsung_T5/Google Drive/Texas A&M/TAMU Projects/NN_Time_Space/Simulation/Simple_Simulator/Simulator/simulation_results/Flow_'+str(figure_number)+rand_name, Flow)
+    np.savetxt('./Density_'+str(figure_number)+rand_name, Density)
+    np.savetxt('./Flow_'+str(figure_number)+rand_name, Flow)
 #========================================================================================================
 
 #     plt.imshow(time_space_matrix)
-#     plt.savefig('/Volumes/Samsung_T5/Google Drive/Texas A&M/TAMU Projects/NN_Time_Space/Simulation/Simple_Simulator/Simulator/simulation_results/Trajectory_'+str(figure_number)+rand_name+'.png', bbox_inches='tight', pad_inches = 0)
+#     plt.savefig('./Trajectory_'+str(figure_number)+rand_name+'.png', bbox_inches='tight', pad_inches = 0)
 
 #     im = Imaage.fromarray(time_space_matrix)
-#     im.save('/Volumes/Samsung_T5/Google Drive/Texas A&M/TAMU Projects/NN_Time_Space/Simulation/Simple_Simulator/Simulator/simulation_results/Trajectory_'+str(figure_number)+rand_name+'.png')
+#     im.save('./Trajectory_'+str(figure_number)+rand_name+'.png')
 #     im.show()
     
     plt.gray()
     plt.imshow(time_space_matrix)
-    plt.savefig('/Volumes/Samsung_T5/Google Drive/Texas A&M/TAMU Projects/NN_Time_Space/Simulation/Simple_Simulator/Simulator/simulation_results/Trajectory_'+str(figure_number)+rand_name+'.png')
+    plt.savefig('./Trajectory_'+str(figure_number)+rand_name+'.png')
 
 
 
@@ -325,12 +341,12 @@ while figure_number < batch_size:
      
     fig.set_size_inches(18, 8)
     fig.tight_layout()
-    plt.savefig('/Volumes/Samsung_T5/Google Drive/Texas A&M/TAMU Projects/NN_Time_Space/Simulation/Simple_Simulator/Simulator/simulation_results/Trajectory_2_'+str(figure_number)+rand_name+'.png', bbox_inches='tight', pad_inches = 0)
+    plt.savefig('./Trajectory_2_'+str(figure_number)+rand_name+'.jpeg', bbox_inches='tight', pad_inches = 0)
     plt.close()
      
 #==========================================================================================================
     IDM_param = np.array([listTgap, listaMax, listb])
-    np.savetxt('/Volumes/Samsung_T5/Google Drive/Texas A&M/TAMU Projects/NN_Time_Space/Simulation/Simple_Simulator/Simulator/simulation_results/IDM_par_'+str(figure_number)+rand_name, IDM_param)
+    np.savetxt('./IDM_par_'+str(figure_number)+rand_name, IDM_param)
     
 
 
