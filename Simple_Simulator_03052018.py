@@ -16,7 +16,7 @@ numLanes = 1
 numRamps = 0
 segLength = 40000           ### feet
 deltaT = 0.5
-totalTime = 120             ### Total Simulation Time 
+totalTime = 900             ### Total Simulation Time 
 figure_number = 0
 WTRatio = 1                 ### Portion of analysis period to include the waves
 totalCars = 730
@@ -307,9 +307,9 @@ while figure_number < batch_size:
 #     im.save('./Trajectory_'+str(figure_number)+rand_name+'.png')
 #     im.show()
     
-    plt.gray()
-    plt.imshow(time_space_matrix)
-    plt.savefig('./Trajectory_'+str(figure_number)+rand_name+'.png')
+#     plt.gray()
+#     plt.imshow(time_space_matrix)
+#     plt.savefig('./Trajectory_'+str(figure_number)+rand_name+'.png')
 
 
 
@@ -341,7 +341,7 @@ while figure_number < batch_size:
      
     fig.set_size_inches(18, 8)
     fig.tight_layout()
-    plt.savefig('./Trajectory_2_'+str(figure_number)+rand_name+'.jpeg', bbox_inches='tight', pad_inches = 0)
+    plt.savefig('./Trajectory_2_'+str(figure_number)+rand_name+'.jpeg', bbox_inches='tight', pad_inches = 0.00, dpi=200)
     plt.close()
      
 #==========================================================================================================
