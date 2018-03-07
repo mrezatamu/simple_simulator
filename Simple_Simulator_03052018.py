@@ -6,12 +6,12 @@ import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
-import time
+import time as run_time
 
 
 #===============================================================================
 ### Set values
-batch_size = 1              ### number of random simulations 
+batch_size = 2              ### number of random simulations 
 numLanes = 1     
 numRamps = 0
 segLength = 40000           ### feet
@@ -105,7 +105,7 @@ def rows(x_0, x_1, column_width):
  
 while figure_number < batch_size:
     
-    rand_name = str(str(time.strftime("%Y%m%d-%H%M%S"))+'-'+str(randint(1,1000000)))
+    rand_name = str(str(run_time.strftime("%Y%m%d-%H%M%S"))+'-'+str(randint(1,1000000)))
     #=======================================================================
     ##Density and Flow blocks
     s_width=1000    ### Width in space (feet)
